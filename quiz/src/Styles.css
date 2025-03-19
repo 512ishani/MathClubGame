@@ -1,0 +1,128 @@
+/* Base styles */
+/* Base styles */
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Poppins', sans-serif;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-color: #001f3f;
+}
+
+/* Default theme (navy blue) */
+body.theme-navy {
+  background-color: #001f3f; /* Navy blue */
+}
+
+/* Sherlock theme */
+body.theme-sherlock {
+  background-color: #3e2723; /* Sherlock theme color */
+  background-image: url('sherlock_bd.jpg'); /* Add your Sherlock background image */
+}
+
+/* Question card styles */
+.App {
+  padding: 2rem;
+  border-radius: 15px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  text-align: center;
+  width: 100%;
+  max-width: 500px;
+  background-color: rgba(255, 255, 255, 0.8); /* Semi-transparent white background */
+  color: #000000; /* Black text for contrast */
+}
+
+/* Add more themes as needed */
+  
+  /* Default theme (navy blue) */
+  body.theme-navy {
+    background-color: #001f3f; /* Navy blue */
+     /* Add your navy blue background image */
+  }
+  
+  /* Sherlock theme */
+  body.theme-sherlock {
+    background-color: #3e2723; /* Sherlock theme color */
+    background-image: url('sherlock_bd.jpg'); /* Add your Sherlock background image */
+  }
+  body.theme-harrypotter {
+    background-color: #2a1a5e; /* Sherlock theme color */
+    background-image: url('harrypotter_bg.jpg'); /* Add your Sherlock background image */
+  }
+  /* Question card styles */
+  .App {
+    padding: 2rem;
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    width: 100%;
+    max-width: 500px;
+    background-color: rgba(255, 255, 255, 0.8); /* Semi-transparent white background */
+    color: #000000; /* Black text for contrast */
+  }
+  
+  /* Add more themes as needed */
+
+
+  
+/* Button styles */
+button {
+    width: 100%;
+    padding: 0.75rem;
+    margin: 0.5rem 0;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    background-color: #2575fc; /* Blue button */
+    color: #fff; /* White text */
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+  }
+  
+  button:hover {
+    background-color: #1b5fd9; /* Darker blue on hover */
+    transform: translateY(-2px); /* Slight lift on hover */
+  }
+  
+  button:active {
+    transform: translateY(0); /* Reset lift on click */
+  }
+  
+  /* Responsive design */
+  @media (max-width: 600px) {
+    h1 {
+      font-size: 2rem;
+    }
+  
+    .App {
+      padding: 1.5rem;
+    }
+  }
+
+  /* Input field styles */
+input {
+    width: 100%;
+    padding: 0.75rem;
+    margin: 0.5rem 0;
+    border: 2px solid #2575fc; /* Blue border */
+    border-radius: 8px;
+    font-size: 1rem;
+    background-color: rgba(255, 255, 255, 0.9); /* Semi-transparent white background */
+    color: #333; /* Dark text for contrast */
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  }
+  
+  input::placeholder {
+    color: rgba(51, 51, 51, 0.7); /* Semi-transparent placeholder text */
+  }
+  
+  input:focus {
+    border-color: #1b5fd9; /* Darker blue border on focus */
+    box-shadow: 0 0 8px rgba(0, 123, 255, 0.5); /* Blue glow on focus */
+    outline: none; /* Remove default outline */
+  }
