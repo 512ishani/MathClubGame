@@ -7,97 +7,68 @@ function App() {
   const [questions, setQuestions] = useState([]);
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [userAnswer, setUserAnswer] = useState('');
-  const [message, setMessage] = useState('');
   const [timeLeft, setTimeLeft] = useState(120);
   const [quizStarted, setQuizStarted] = useState(false);
   const [quizCompleted, setQuizCompleted] = useState(false);
   const [themeClass, setThemeClass] = useState('theme-navy'); // Default theme
 
-  // Fetch questions by set_id
+  useEffect(() => {
+    if (quizStarted && timeLeft > 0) {
+      const timer = setTimeout(() => setTimeLeft(timeLeft - 1), 1000);
+      return () => clearTimeout(timer);
+    } else if (timeLeft === 0) {
+      endQuiz();
+    }
+  }, [quizStarted, timeLeft]);
+
   const fetchQuestions = async () => {
     try {
       const response = await axios.get(`http://localhost:5000/questions/${setId}`);
       setQuestions(response.data);
       setQuizStarted(true);
-
-      // Dynamically set the theme based on setId
-      let newThemeClass = 'theme-navy'; // Default theme
-      switch (setId) {
-        case '1':
-          newThemeClass = 'theme-sherlock'; // sherlock theme
-          break;
-        case '2':
-          newThemeClass='theme-harrypotter';//harry potter 
-          break;
-        case '3':
-          newThemeClass='theme-junglebook';//junglebook 
-          break;
-        case '4':
-          case '2':
-          newThemeClass='theme-timetravel';//time travel 
-          break;
-        default:
-          newThemeClass = 'theme-navy'; // Default theme
-      }
-      setThemeClass(newThemeClass);
-      document.body.className = newThemeClass; // Update body class
+      setThemeClass(getThemeClass(setId));
+      document.body.className = getThemeClass(setId);
     } catch (error) {
       console.error('Error fetching questions:', error);
     }
   };
 
-  // Validate user's answer
-  const validateAnswer = async () => {
-    try {
-      const response = await axios.post('http://localhost:5000/validate', {
-        question_id: questions[currentQuestion].question_id,
-        answer: userAnswer,
-      });
-      if (response.data.correct) {
-        setMessage('Correct! Moving to the next question...');
-        if (currentQuestion === questions.length - 1) {
-          setQuizCompleted(true);
-          setMessage('Quiz Completed! Well done!');
-        } else {
-          setCurrentQuestion((prev) => prev + 1);
-        }
-        setUserAnswer('');
-      } else {
-        setMessage(`Incorrect! The correct answer is: ${response.data.correct_answer}`);
-      }
-    } catch (error) {
-      console.error('Error validating answer:', error);
+  const getThemeClass = (setId) => {
+    switch (setId) {
+      case '1': return 'theme-sherlock';
+      case '2': return 'theme-harrypotter';
+      case '3': return 'theme-junglebook';
+      case '4': return 'theme-timetravel';
+      default: return 'theme-navy';
     }
   };
 
-  // Timer logic
-  useEffect(() => {
-    if (quizStarted && timeLeft > 0 && !quizCompleted) {
-      const timer = setTimeout(() => setTimeLeft(timeLeft - 1), 1000);
-      return () => clearTimeout(timer);
-    } else if (timeLeft === 0 || quizCompleted) {
-      setMessage('Time is up!');
-      setTimeout(() => {
-        resetQuiz();
-      }, 3000);
+  const getBackgroundStyle = () => {
+    switch (themeClass) {
+      case 'theme-sherlock': return { backgroundImage: `url(${process.env.PUBLIC_URL}/sherlock-bg.jpg)`, backgroundColor: '#3e2723' };
+      case 'theme-harrypotter': return { backgroundImage: `url(${process.env.PUBLIC_URL}/potter-bg.jpg)`, backgroundColor: '#2a1a5e' };
+      case 'theme-junglebook': return { backgroundColor: '#2e8b57' };
+      case 'theme-timetravel': return { backgroundColor: '#4b0082' };
+      default: return { backgroundColor: '#001f3f' };
     }
-  }, [timeLeft, quizStarted, quizCompleted]);
+  };
 
-  // Reset quiz state
-  const resetQuiz = () => {
+  const nextQuestion = () => {
+    if (currentQuestion < questions.length - 1) {
+      setCurrentQuestion(currentQuestion + 1);
+      setUserAnswer('');
+    } else {
+      endQuiz();
+    }
+  };
+
+  const endQuiz = () => {
+    setQuizCompleted(true);
     setQuizStarted(false);
-    setSetId('');
-    setQuestions([]);
-    setCurrentQuestion(0);
-    setTimeLeft(120);
-    setQuizCompleted(false);
-    setMessage('');
-    setThemeClass('theme-navy'); // Reset to default theme
-    document.body.className = 'theme-navy'; // Reset body class
   };
 
   return (
-    <div className="App">
+    <div className="App" style={getBackgroundStyle()}>
       <h1>Cryptoscapes</h1>
       {!quizStarted ? (
         <div>
@@ -111,11 +82,11 @@ function App() {
         </div>
       ) : (
         <div>
-          <h2 className="timer">Time Left: {timeLeft} seconds</h2>
-          {currentQuestion < questions.length ? (
+          <h2 className="timer">⏳ Time Left: {timeLeft} seconds</h2>
+          {questions.length > 0 && currentQuestion < questions.length ? (
             <div className="question">
               <h3>Question {currentQuestion + 1}:</h3>
-              <p>{questions[currentQuestion].question_text}</p>
+              <p>{questions[currentQuestion]?.question_text || "Loading..."}</p>
               <input
                 type="text"
                 placeholder="Your answer"
@@ -123,18 +94,19 @@ function App() {
                 onChange={(e) => setUserAnswer(e.target.value)}
                 disabled={quizCompleted}
               />
-              <button onClick={validateAnswer} disabled={quizCompleted}>
-                Submit Answer
-              </button>
+              {currentQuestion < questions.length - 1 ? (
+                <button onClick={nextQuestion} className="next-button">Next Question</button>
+              ) : (
+                <button onClick={endQuiz} className="end-button">End Quiz</button>
+              )}
             </div>
           ) : (
             <div>
-              <h2>Quiz Completed! Well done!</h2>
-              <h3>Time needed was : {120-timeLeft}</h3>
-              <button onClick={resetQuiz}>Return to Home Page</button>
+              <h2>🎉 Quiz Completed! Well done!</h2>
+              <h3>⏳ Time Taken: {120 - timeLeft} seconds</h3>
+              <button onClick={() => window.location.reload()}>Return to Home Page</button>
             </div>
           )}
-          {message && <p className="message">{message}</p>}
         </div>
       )}
     </div>
